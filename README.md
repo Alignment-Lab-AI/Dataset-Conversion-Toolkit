@@ -24,7 +24,9 @@ This toolkit provides essential utilities to process and convert various dataset
     - If a dataset format is not recognized, the script prompts for input/output keys, saves the new format to the configuration, and remembers it for future use.
     - --single and --multi as args specify the output format chosen
       
-      ```python3 singleormulti.py --single```
+      ```python3 singleormulti.py --single``` = ``` {"instruction": "...", "input": "...", "output": "..."}```
+
+      ```python3 singleormulti.py --multi``` = ```{"conversations": [{"from": "human", "value": "..."}, {"from": "gpt", "value": "..."}, ...]}```
    
     - --repo specifies a huggingface repo
       
@@ -63,6 +65,7 @@ The toolkit uses a `configurations.json` file to understand various dataset form
 Users can extend the `configurations.json` file to include new dataset formats as needed.
 code should detect if the dataset isnt in a recognized format and prompt the user to select the input/output tuples
 and will default to 3 turns of conversation in the case of turning single turn conversations to multiturn, otherwise preserves the turn number in the source dataset.
+
 
 
 ONGOING ISSUES:  does not currently detect multi turn data properly if there is more than one top level key, or the top level key has any name other than 'conversations'
