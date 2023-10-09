@@ -16,10 +16,14 @@ This toolkit provides essential utilities to process and convert various dataset
     - Converts datasets into either single-turn or multi-turn formats based on user input.
     - Can process datasets from various sources including local directories, individual files, or HuggingFace datasets.
     - If a dataset format is not recognized, the script prompts for input/output keys, saves the new format to the configuration, and remembers it for future use.
-    - --single and --multi as args specify the output format chosen ```python3 singleormulti.py --single```
-    - --repo specifies a huggingface repo  ```python3 singleormulti.py --multi --repo Open-Orca/OpenOrca```
-    - --dir specifies a directory (dont select the directory with the script or it will eat its own config file) ```python3 singleormulti.py --single --dir ./yourfolderwithdatasets```
-    - --file specifies a specific file stored locally ```python2 singleormultipy --multi --file .dataset.jsonl```
+    - --single and --multi as args specify the output format chosen
+      ```python3 singleormulti.py --single```
+    - --repo specifies a huggingface repo
+      ```python3 singleormulti.py --multi --repo Open-Orca/OpenOrca```
+    - --dir specifies a directory (dont select the directory with the script or it will eat its own config file)
+      ```python3 singleormulti.py --single --dir ./yourfolderwithdatasets```
+    - --file specifies a specific file stored locally
+      ```python2 singleormultipy --multi --file .dataset.jsonl```
       
 ## Usage
 
