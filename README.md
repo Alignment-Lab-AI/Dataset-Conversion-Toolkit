@@ -40,3 +40,10 @@ The toolkit uses a `configurations.json` file to understand various dataset form
 - Mappings to dictate how fields in the original dataset are converted to the desired output format.
 
 Users can extend the `configurations.json` file to include new dataset formats as needed.
+code should detect if the dataset isnt in a recognized format and prompt the user to select the input/output tuples
+and will default to 3 turns of conversation in the case of turning single turn conversations to multiturn, otherwise preserves the turn number in the source dataset.
+
+
+ONGOING ISSUES:  does not currently detect multi turn data properly if there is more than one top level key, or the top level key has any name other than 'conversations'
+
+singleormulti script needs cleaning, currently designed to take parquets but doesnt convert them as efficiently as parquet parquet_to_jsonl.
