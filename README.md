@@ -7,10 +7,16 @@ This toolkit provides essential utilities to process and convert various dataset
 1. **Deduplication (`dedup.py`)**: 
     - Deduplicates large JSONL datasets in a memory-efficient manner by processing them in chunks.
     - Uses a set-based approach for efficient deduplication within each chunk.
+    - drop in the folder with your jsonls and run, specify batch size according to your local requirements
+
+      ```python3 dedup.py```
 
 2. **Parquet to JSONL Conversion (`parquet_to_jsonl.py`)**:
     - Converts Parquet files to JSONL format.
     - Efficiently processes large Parquet files by reading them in row groups and converting in batches.
+    - drop in the folder with your parquets, specify a batch size in the script if it doesnt run
+
+      ```python3 parquet_to_jsonl.py```
 
 3. **Dataset Formatting (`singleormulti.py`)**:
     - Converts datasets into either single-turn or multi-turn formats based on user input.
