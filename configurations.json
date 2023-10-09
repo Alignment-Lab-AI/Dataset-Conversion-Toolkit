@@ -1,0 +1,350 @@
+{
+  "mappings": {
+    "alpaca": {
+      "keys": ["instruction", "input", "output"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "output",
+        "extra": ["input"]
+      }
+    },
+    "sharegpt": {
+      "keys": ["conversations"],
+      "type": "multi_turn",
+      "mappings": {
+        "from": "role",
+        "value": "value"
+      }
+    },
+    "jeopardy": {
+      "keys": ["question", "category", "answer"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "question",
+        "output": "answer",
+        "extra": ["category"]
+      }
+    },
+    "oasst": {
+      "keys": ["INSTRUCTION", "RESPONSE"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "INSTRUCTION",
+        "output": "RESPONSE"
+      }
+    },
+    "gpteacher": {
+      "keys": ["instruction", "input", "response"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "response",
+        "extra": ["input"]
+      }
+    },
+    "reflection": {
+      "keys": ["instruction", "input", "output", "reflection", "corrected"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "output",
+        "extra": ["input", "reflection", "corrected"]
+      }
+    },
+    "explainchoice": {
+      "keys": ["question", "choices", "solution", "explanation"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "question",
+        "output": "solution",
+        "extra": ["choices", "explanation"]
+      }
+    },
+    "concisechoice": {
+      "keys": ["question", "choices", "solution", "explanation"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "question",
+        "output": "solution",
+        "extra": ["choices", "explanation"]
+      }
+    },
+    "summarizetldr": {
+      "keys": ["article", "summary"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "article",
+        "output": "summary"
+      }
+    },
+    "alpaca_chat": {
+      "keys": ["instruction", "input", "response"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "response",
+        "extra": ["input"]
+      }
+    },
+    "alpaca_chat.load_qa": {
+      "keys": ["question", "answer"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "question",
+        "output": "answer"
+      }
+    },
+    "alpaca_chat.load_concise": {
+      "keys": ["instruction", "input", "response"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "response",
+        "extra": ["input"]
+      }
+    },
+    "alpaca_chat.load_camel_ai": {
+      "keys": ["message_1", "message_2"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "message_1",
+        "output": "message_2"
+      }
+    },
+    "alpaca_w_system.load_open_orca": {
+      "keys": ["system_prompt", "question", "response"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "system_prompt",
+        "output": "response",
+        "extra": ["question"]
+      }
+    },
+    "context_qa": {
+      "keys": ["article", "question", "answer"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "article",
+        "output": "answer",
+        "extra": ["question"]
+      }
+    },
+    "context_qa.load_v2": {
+      "keys": ["context", "question", "answer"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "context",
+        "output": "answer",
+        "extra": ["question"]
+      }
+    },
+    "context_qa.load_404": {
+      "keys": ["article", "unanswerable_question"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "article",
+        "output": "unanswerable_question"
+      }
+    },
+    "creative_acr.load_answer": {
+      "keys": ["instruction", "revision"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "revision"
+      }
+    },
+    "creative_acr.load_critique": {
+      "keys": ["scores", "critiques", "instruction", "answer"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "answer",
+        "extra": ["scores", "critiques"]
+      }
+    },
+    "creative_acr.load_revise": {
+      "keys": ["scores", "critiques", "instruction", "answer", "revision"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "revision",
+        "extra": ["scores", "critiques", "answer"]
+      }
+    },
+    "pygmalion": {
+      "keys": ["conversations"],
+      "type": "multi_turn",
+      "mappings": {
+        "role": "role",
+        "value": "value"
+      }
+    },
+    "metharme": {
+      "keys": ["prompt", "generation"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "prompt",
+        "output": "generation"
+      }
+    },
+    "sharegpt.load_role": {
+      "keys": ["conversations"],
+      "type": "multi_turn",
+      "mappings": {
+        "role": "role",
+        "value": "value"
+      }
+    },
+    "sharegpt.load_guanaco": {
+      "keys": ["conversations"],
+      "type": "multi_turn",
+      "mappings": {
+        "from": "from",
+        "value": "value"
+      }
+    },
+    "instruct": {
+      "keys": ["instruction", "output"],
+      "mappings": {
+        "instruction": "instruction",
+        "output": "output",
+        "extra": []
+      }
+    },
+    "test": {
+      "keys": ["instruction", "output"],
+      "type": "single_turn",
+      "mappings": {
+        "instruction": "instruction",
+        "output": "output",
+        "extra": []
+      }
+    },
+    "textbooks": {
+      "keys": [
+        "formatted_prompt",
+        "completion",
+        "first_task",
+        "second_task",
+        "last_task",
+        "notes",
+        "title",
+        "model",
+        "temperature"
+      ],
+      "mappings": {
+        "instruction": "formatted_prompt",
+        "output": "completion",
+        "extra": [
+          "first_task",
+          "second_task",
+          "last_task",
+          "notes",
+          "title",
+          "model",
+          "temperature"
+        ]
+      }
+    }
+  },
+  "descriptions": {
+    "alpaca": {
+      "example": "{\"instruction\": \"...\", \"input\": \"...\", \"output\": \"...\"}",
+      "description": "Type: single_turn. Mappings: instruction maps to instruction, output maps to output, and input is considered as an extra field."
+    },
+    "sharegpt": {
+      "example": "{\"conversations\": [{\"from\": \"...\", \"value\": \"...\"}]}",
+      "description": "Type: multi_turn. Mappings: from maps to from, and value maps to value."
+    },
+    "jeopardy": {
+      "example": "{\"question\": \"...\", \"category\": \"...\", \"answer\": \"...\"}",
+      "description": "Type: single_turn. Mappings: question maps to instruction, answer maps to output, and category is considered as an extra field."
+    },
+    "oasst": {
+      "example": "{\"INSTRUCTION\": \"...\", \"RESPONSE\": \"...\"}",
+      "description": "Type: single_turn. Mappings: INSTRUCTION maps to instruction and RESPONSE maps to output."
+    },
+    "gpteacher": {
+      "example": "{\"instruction\": \"...\", \"input\": \"...\", \"response\": \"...\"}",
+      "description": "Type: single_turn. Mappings: instruction maps to instruction, response maps to output, and input is considered as an extra field."
+    },
+    "reflection": {
+      "example": "{\"instruction\": \"...\", \"input\": \"...\", \"output\": \"...\", \"reflection\": \"...\", \"corrected\": \"...\"}",
+      "description": "Type: single_turn. Mappings: instruction maps to instruction, output maps to output, and input, reflection, and corrected are considered as extra fields."
+    },
+    "explainchoice": {
+      "example": "{\"question\": \"...\", \"choices\": [\"...\"], \"solution\": \"...\", \"explanation\": \"...\"}",
+      "description": "Type: single_turn. Mappings: question maps to instruction, solution maps to output, and choices and explanation are considered as extra fields."
+    },
+    "concisechoice": {
+      "example": "{\"question\": \"...\", \"choices\": [\"...\"], \"solution\": \"...\", \"explanation\": \"...\"}",
+      "description": "Type: single_turn. Mappings: question maps to instruction, solution maps to output, and choices and explanation are considered as extra fields."
+    },
+    "summarizetldr": {
+      "example": "{\"article\": \"...\", \"summary\": \"...\"}",
+      "description": "Type: single_turn. Mappings: article maps to instruction, summary maps to output."
+    },
+    "alpaca_chat": {
+      "example": "{\"instruction\": \"...\", \"input\": \"...\", \"response\": \"...\"}",
+      "description": "Type: single_turn. Mappings: instruction maps to instruction, response maps to output, and input is considered as an extra field."
+    },
+    "alpaca_chat.load_qa": {
+      "example": "{\"question\": \"...\", \"answer\": \"...\"}",
+      "description": "Type: single_turn. Mappings: question maps to instruction, answer maps to output."
+    },
+    "alpaca_chat.load_concise": {
+      "example": "{\"instruction\": \"...\", \"input\": \"...\", \"response\": \"...\"}",
+      "description": "Type: single_turn. Mappings: instruction maps to instruction, response maps to output, and input is considered as an extra field."
+    },
+    "alpaca_chat.load_camel_ai": {
+      "example": "{\"message_1\": \"...\", \"message_2\": \"...\"}",
+      "description": "Type: single_turn. Mappings: message_1 maps to instruction, message_2 maps to output."
+    },
+    "alpaca_w_system.load_open_orca": {
+      "example": "{\"system_prompt\": \"...\", \"question\": \"...\", \"response\": \"...\"}",
+      "description": "Type: single_turn. Mappings: system_prompt maps to instruction, response maps to output, and question is considered as an extra field."
+    },
+    "context_qa": {
+      "example": "{\"article\": \"...\", \"question\": \"...\", \"answer\": \"...\"}",
+      "description": "Type: single_turn. Mappings: article maps to instruction, answer maps to output, and question is considered as an extra field."
+    },
+    "context_qa.load_v2": {
+      "example": "{\"context\": \"...\", \"question\": \"...\", \"answer\": \"...\"}",
+      "description": "Type: single_turn. Mappings: context maps to instruction, answer maps to output, and question is considered as an extra field."
+    },
+    "context_qa.load_404": {
+      "example": "{\"article\": \"...\", \"unanswerable_question\": \"...\"}",
+      "description": "Type: single_turn. Mappings: article maps to instruction, unanswerable_question maps to output."
+    },
+    "creative_acr.load_answer": {
+      "example": "{\"instruction\": \"...\", \"revision\": \"...\"}",
+      "description": "Type: single_turn. Mappings: instruction maps to instruction, revision maps to output."
+    },
+    "creative_acr.load_critique": {
+      "example": "{\"scores\": \"...\", \"critiques\": \"...\", \"instruction\": \"...\", \"answer\": \"...\"}",
+      "description": "Type: single_turn. Mappings: instruction maps to instruction, answer maps to output, and scores and critiques are considered as extra fields."
+    },
+    "creative_acr.load_revise": {
+      "example": "{\"scores\": \"...\", \"critiques\": \"...\", \"instruction\": \"...\", \"answer\": \"...\", \"revision\": \"...\"}",
+      "description": "Type: single_turn. Mappings: instruction maps to instruction, revision maps to output, and scores, critiques, and answer are considered as extra fields."
+    },
+    "pygmalion": {
+      "example": "{\"conversations\": [{\"role\": \"...\", \"value\": \"...\"}]}",
+      "description": "Type: multi_turn. Mappings: role maps to role, and value maps to value."
+    },
+    "metharme": {
+      "example": "{\"prompt\": \"...\", \"generation\": \"...\"}",
+      "description": "Type: single_turn. Mappings: prompt maps to instruction, generation maps to output."
+    },
+    "sharegpt.load_role": {
+      "example": "{\"conversations\": [{\"role\": \"...\", \"value\": \"...\"}]}",
+      "description": "Type: multi_turn. Mappings: role maps to role, and value maps to value."
+    },
+    "sharegpt.load_guanaco": {
+      "example": "{\"conversations\": [{\"from\": \"...\", \"value\": \"...\"}]}",
+      "description": "Type: multi_turn. Mappings: from maps to from, and value maps to value."
+    }
+  }
+}
