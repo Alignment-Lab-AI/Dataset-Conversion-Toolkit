@@ -4,30 +4,7 @@ import os
 import glob
 import pandas as pd
 from datasets import load_dataset
-
-def convert_to_single_turn(data, config):
-    print("Starting conversion to single turn...")
-    for item in data:
-        if 'conversations' in item or 'conversation' in item:
-            conversations = item.get('conversations') or item.get('conversation')
-            for i in range(len(conversations) - 1):
-                yield {
-                    'instruction': conversations[i].get('value', ''),
-                    'input': '',
-                    'output': conversations[i + 1].get('value', '')
-                }
-        else:
-            format_type = detect_format(item, config)
-            if format_type is None:
-                format_type = add_format(item, config)
-            mappings = config['mappings'][format_type]['mappings']
-            extra_keys = [key for key in item.keys() if key not in [mappings['instruction'], mappings['output']]]
-            yield {
-                'instruction': item.get(mappings['instruction'], ''),
-                'input': ' '.join(str(item.get(key, '')) for key in extra_keys),
-                'output': item.get(mappings['output'], '')
-            }
-    print("Conversion to single turn completed.")
+from multiprocessing import Pool, cpu_count
 
 def convert_to_multi_turn(data, config):
     print("Starting conversion to multi turn...")
@@ -45,11 +22,22 @@ def convert_to_multi_turn(data, config):
             mappings = config['mappings'][format_type]['mappings']
             instruction = item.get(mappings['instruction'], '')
             output = item.get(mappings['output'], '')
-            if instruction and output:
-                yield {'conversations': [
-                    {'from': 'human', 'value': instruction},
-                    {'from': 'gpt', 'value': output}
-                ]}
+            extra_keys = [key for key in item.keys() if key not in [mappings['instruction'], mappings['output']]]
+            if extra_keys:
+                yield {
+                    'conversations': [
+                        {'from': 'system', 'value': ' '.join(str(item.get(key, '')) for key in extra_keys)},
+                        {'from': 'human', 'value': instruction},
+                        {'from': 'gpt', 'value': output}
+                    ]
+                }
+            else:
+                yield {
+                    'conversations': [
+                        {'from': 'human', 'value': instruction},
+                        {'from': 'gpt', 'value': output}
+                    ]
+                }
     print("Conversion to multi turn completed.")
 
 def detect_format(item, config):
@@ -83,6 +71,7 @@ def main():
     group.add_argument('--dir', help='Path to the directory containing dataset files.')
     group.add_argument('--file', help='Path to the single file.')
     group.add_argument('--repo', help='Huggingface repo name.')
+    group.add_argument('--list', help='List of Huggingface repo names.')
     parser.add_argument('--single', action='store_true', help='Convert to single turn format.')
     parser.add_argument('--multi', action='store_true', help='Convert to multi turn format.')
     args = parser.parse_args()
@@ -96,6 +85,13 @@ def main():
     elif args.file:
         files = [args.file]
         output_file = os.path.splitext(os.path.basename(args.file))[0] + '.jsonl'
+    elif args.list:
+        repo_list = args.list.split(',')
+        data = []
+        for repo in repo_list:
+            dataset = load_dataset(repo, split='train')
+            data.extend([item for item in dataset])
+        output_file = "formatted_data.jsonl"
     else:
         dataset = load_dataset(args.repo, split='train')
         data = [item for item in dataset]
@@ -111,8 +107,6 @@ def main():
                     data.extend(json.loads(line) for line in file)
 
     if args.single:
-        formatted_data = convert_to_single_turn(data, config)
-    else:
         formatted_data = convert_to_multi_turn(data, config)
 
     output_path = os.path.join(os.getcwd(), output_file)
@@ -124,3 +118,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
