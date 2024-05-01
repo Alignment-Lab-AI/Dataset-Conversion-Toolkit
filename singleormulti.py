@@ -2,19 +2,24 @@ import argparse
 import json
 import os
 import glob
-import pandas as pd
 from datasets import load_dataset
-from multiprocessing import Pool, cpu_count
+from multiprocessing import cpu_count
 
 def convert_to_multi_turn(data, config):
     print("Starting conversion to multi turn...")
+    formatted_data = []
     for item in data:
         if 'conversations' in item or 'conversation' in item:
             conversations = item.get('conversations') or item.get('conversation')
-            yield {'conversations': [
-                {'from': 'human' if turn.get('from', '').lower() in ['user', 'human'] else 'gpt', 'value': turn.get('value', '')}
-                for turn in conversations if 'value' in turn
-            ]}
+            formatted_conversations = []
+            start_index = 0
+            if conversations[0].get('from', '').lower() == 'system':
+                formatted_conversations.append({'from': 'system', 'value': conversations[0].get('value', '')})
+                start_index = 1
+            for i in range(start_index, len(conversations)):
+                if 'value' in conversations[i]:
+                    formatted_conversations.append({'from': 'human' if (i - start_index) % 2 == 0 else 'gpt', 'value': conversations[i].get('value', '')})
+            formatted_data.append({'conversations': formatted_conversations})
         else:
             format_type = detect_format(item, config)
             if format_type is None:
@@ -24,21 +29,22 @@ def convert_to_multi_turn(data, config):
             output = item.get(mappings['output'], '')
             extra_keys = [key for key in item.keys() if key not in [mappings['instruction'], mappings['output']]]
             if extra_keys:
-                yield {
+                formatted_data.append({
                     'conversations': [
                         {'from': 'system', 'value': ' '.join(str(item.get(key, '')) for key in extra_keys)},
                         {'from': 'human', 'value': instruction},
                         {'from': 'gpt', 'value': output}
                     ]
-                }
+                })
             else:
-                yield {
+                formatted_data.append({
                     'conversations': [
                         {'from': 'human', 'value': instruction},
                         {'from': 'gpt', 'value': output}
                     ]
-                }
+                })
     print("Conversion to multi turn completed.")
+    return formatted_data
 
 def detect_format(item, config):
     for format_type, format_data in config['mappings'].items():
@@ -65,13 +71,22 @@ def add_format(item, config):
     print("New format added.")
     return format_type
 
+def process_file(file_path, config, args):
+    dataset = load_dataset(file_path)
+    
+    if args.multi:
+        formatted_data = dataset.map(lambda x: convert_to_multi_turn(x, config), num_proc=cpu_count())
+    else:
+        formatted_data = dataset
+    
+    return formatted_data
+
 def main():
     parser = argparse.ArgumentParser()
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--dir', help='Path to the directory containing dataset files.')
-    group.add_argument('--file', help='Path to the single file.')
+    group.add_argument('--file', help='Path to a text file with a repo/path on each new line.')
     group.add_argument('--repo', help='Huggingface repo name.')
-    group.add_argument('--list', help='List of Huggingface repo names.')
     parser.add_argument('--single', action='store_true', help='Convert to single turn format.')
     parser.add_argument('--multi', action='store_true', help='Convert to multi turn format.')
     args = parser.parse_args()
@@ -81,40 +96,57 @@ def main():
 
     if args.dir:
         files = glob.glob(os.path.join(args.dir, '*'))
-        output_file = "formatted_data.jsonl"
+        output_file = "formatted_data.parquet"
     elif args.file:
-        files = [args.file]
-        output_file = os.path.splitext(os.path.basename(args.file))[0] + '.jsonl'
-    elif args.list:
-        repo_list = args.list.split(',')
+        with open(args.file, 'r') as f:
+            repo_list = [line.strip() for line in f]
         data = []
         for repo in repo_list:
-            dataset = load_dataset(repo, split='train')
-            data.extend([item for item in dataset])
-        output_file = "formatted_data.jsonl"
+            try:
+                dataset = load_dataset(repo)
+            except ValueError as e:
+                if "should be one of" in str(e):
+                    available_splits = eval(str(e).split("should be one of ")[1])
+                    dataset = None
+                    for split in available_splits:
+                        try:
+                            dataset = load_dataset(repo, split=split)
+                            break
+                        except:
+                            continue
+                    if dataset is None:
+                        print(f"No valid split found for {repo}. Skipping.")
+                        continue
+                else:
+                    raise e
+            for split, ds in dataset.items():
+                ds.to_parquet(f"{repo.replace('/', '_')}_{split}_unprocessed.parquet")
+            data.append(dataset)
+        output_file = "formatted_data.parquet"
     else:
-        dataset = load_dataset(args.repo, split='train')
-        data = [item for item in dataset]
-        output_file = "formatted_data.jsonl"
+        dataset = load_dataset(args.repo)
+        data = [dataset]
+        output_file = "formatted_data.parquet"
 
-    if args.dir or args.file:
-        data = []
+    if args.dir:
+        formatted_data = []
         for file_path in files:
-            if file_path.endswith('.parquet'):
-                data.extend(pd.read_parquet(file_path).to_dict('records'))
-            else:
-                with open(file_path, 'r') as file:
-                    data.extend(json.loads(line) for line in file)
+            formatted_data.append(process_file(file_path, config, args))
+    else:
+        if args.multi:
+            formatted_data = data[0].map(lambda x: convert_to_multi_turn(x, config), num_proc=cpu_count())
+            for dataset in data[1:]:
+                for split, ds in dataset.items():
+                    formatted_data = formatted_data.concatenate(ds.map(lambda x: convert_to_multi_turn(x, config), num_proc=cpu_count()))
+        else:
+            formatted_data = data[0] 
+            for dataset in data[1:]:
+                for split, ds in dataset.items():
+                    formatted_data = formatted_data.concatenate(ds)
 
-    if args.single:
-        formatted_data = convert_to_multi_turn(data, config)
+    formatted_data.to_parquet(output_file)
 
-    output_path = os.path.join(os.getcwd(), output_file)
-    with open(output_path, 'w') as out_file:
-        for item in formatted_data:
-            out_file.write(json.dumps(item) + '\n')
-
-    print(f"Data saved to {output_path}")
+    print(f"Data saved to {output_file}")
 
 if __name__ == "__main__":
     main()
